@@ -5,7 +5,7 @@
 ## Use
 * Open the bamazonInventoryDB.sql file in mySQL and initialize the table.
 * Open up the bamazonCustomer.js file in a Bash terminal.
-* Run the app using the 'node bamazonCustomer.js' command, minus the quotes.
+* Run the app using the **node bamazonCustomer.js** command.
 * This should display the inventory as specified in the bamazonInventoryDB.sql file.
 * Follow the prompts as displayed.
   * Entering any invalid characters will not allow you to proceed.
