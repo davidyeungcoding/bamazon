@@ -10,4 +10,4 @@
 * Follow the prompts as displayed.
   * Entering any invalid characters will not allow you to proceed.
   * If you enter a quantity that is greater than what is in stock will prompt an error message and terminate the app.
-  * At the end you will be informed of what you selected, how many you wnated to order, and the total.
+  * At the end you will be informed of what you've selected, the quantity chosen, and the grand total.
