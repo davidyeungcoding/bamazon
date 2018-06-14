@@ -28,32 +28,32 @@ function landingScreen() {
 };
 
 function purchase() {
-    inquirer.prompt([
-        {
-            name: 'item',
-            type: 'input',
-            message: 'Please input the Item ID for the item you would like to purchase.',
-            validate: function(value) {
-                if (isNaN(value) === false && value > 0) { // might look into setting a limit of the length of our item list
-                    return true;
+    connection.query('SELECT * FROM products', function(err, res) {
+        if (err) throw err;
+        inquirer.prompt([
+            {
+                name: 'item',
+                type: 'input',
+                message: 'Please input the Item ID for the item you would like to purchase.',
+                validate: function(value) {
+                    if (isNaN(value) === false && value > 0 && value < res.length) {
+                        return true;
+                    }
+                    return false;
                 }
-                return false;
-            }
-        },
-        {
-            name: 'quantity',
-            type: 'input',
-            message: 'How many would you like to order?',
-            validate: function(value) {
-                if (isNaN(value) === false && value > 0) { // might look into setting a limit of the length of our item list
-                    return true;
+            },
+            {
+                name: 'quantity',
+                type: 'input',
+                message: 'How many would you like to order?',
+                validate: function(value) {
+                    if (isNaN(value) === false && value > 0) {
+                        return true;
+                    }
+                    return false;
                 }
-                return false;
             }
-        }
-    ]).then(function(itemSelect) {
-        connection.query('SELECT * FROM products', function(err, res) {
-            if (err) throw err;
+        ]).then(function(itemSelect) {
             var chosenItem;
             for (var i = 0; i < res.length; i++) {
                 if (res[i].item_id === parseInt(itemSelect.item)) {
@@ -71,7 +71,7 @@ function purchase() {
                 console.log('\nInsufficient quantitiy!');
             }
             connection.end();
-        })
+        });
     });
 };
 
