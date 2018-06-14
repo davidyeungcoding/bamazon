@@ -18,7 +18,7 @@ var connection = mysql.createConnection({
 // ===============
 
 function landingScreen() {
-    connection.query(`SELECT * FROM products`, function(err, res) {
+    connection.query('SELECT * FROM products', function(err, res) {
         if (err) throw err;
         for (var i = 0; i < res.length; i++) {
             console.log(`Item ID: ${res[i].item_id} || Product Name: ${res[i].product_name} || Department: ${res[i].department_name} || Price: ${res[i].price} || Stock: ${res[i].stock_quantity}`);
@@ -28,7 +28,7 @@ function landingScreen() {
 };
 
 function purchase() {
-    inquirer.prompt(
+    inquirer.prompt([
         {
             name: 'item',
             type: 'input',
@@ -36,9 +36,6 @@ function purchase() {
             validate: function(value) {
                 if (isNaN(value) === false && value > 0) { // might look into setting a limit of the length of our item list
                     return true;
-                }
-                if (value === 0) { // migt not work because of the return in previous condition
-                    console.log('Cancelling order.')
                 }
                 return false;
             }
@@ -51,32 +48,31 @@ function purchase() {
                 if (isNaN(value) === false && value > 0) { // might look into setting a limit of the length of our item list
                     return true;
                 }
-                if (value === 0) { // migt not work because of the return in previous condition
-                    console.log('Cancelling order.')
-                }
                 return false;
             }
         }
-    ).then(function(itemSelect) {
-        // function for updating the DB with the new stock after purchase
-        if (itemSelect.item.stock_quantity > 0) {
-            connection.query('UPDATE bamazon SET stock_quantity = stock_quantity - 1 WHERE ?', {item_id: itemSelect.item}), function(err, res) {
-                if (err) throw err;
+    ]).then(function(itemSelect) {
+        connection.query('SELECT * FROM products', function(err, res) {
+            if (err) throw err;
+            var chosenItem;
+            for (var i = 0; i < res.length; i++) {
+                if (res[i].item_id === parseInt(itemSelect.item)) {
+                    chosenItem = res[i];
+                }
             }
-        }
-        else {
-            console.log('Insufficient quantity!');
-        }
-        total();
-        // connection.query('SELECT * FROM bamazon WHERE ?', {item_id: itemSelect.item}, function(err,res) {
-        //     if (err) throw err;
-            
-        // })
+            if (chosenItem.stock_quantity > 0) {
+                connection.query('UPDATE products SET stock_quantity = stock_quantity - ' + itemSelect.quantity + ' WHERE ?', {item_id: itemSelect.item}), function(err, update) {
+                    if (err) throw err;
+                }
+                console.log(`${itemSelect.quantity} order(s) of ${chosenItem.product_name}.`);
+                console.log(`Your total comes to : $${chosenItem.price * parseInt(itemSelect.quantity)}`);
+            }
+            else {
+                console.log('Insufficient quantitiy!');
+            }
+            connection.end();
+        })
     });
-};
-
-function total() {
-
 };
 
 // ================
