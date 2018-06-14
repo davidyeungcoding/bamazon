@@ -21,7 +21,7 @@ function landingScreen() {
     connection.query('SELECT * FROM products', function(err, res) {
         if (err) throw err;
         for (var i = 0; i < res.length; i++) {
-            console.log(`Item ID: ${res[i].item_id} || Product Name: ${res[i].product_name} || Department: ${res[i].department_name} || Price: ${res[i].price} || Stock: ${res[i].stock_quantity}`);
+            console.log(`Item ID: ${res[i].item_id} || Product Name: ${res[i].product_name} || Department: ${res[i].department_name} || Price: ${res[i].price} || Stock: ${res[i].stock_quantity}\n`);
         }
         purchase();
     })
@@ -64,11 +64,11 @@ function purchase() {
                 connection.query('UPDATE products SET stock_quantity = stock_quantity - ' + itemSelect.quantity + ' WHERE ?', {item_id: itemSelect.item}), function(err, update) {
                     if (err) throw err;
                 }
-                console.log(`${itemSelect.quantity} order(s) of ${chosenItem.product_name}.`);
+                console.log(`\n${itemSelect.quantity} order(s) of ${chosenItem.product_name}.`);
                 console.log(`Your total comes to : $${chosenItem.price * parseInt(itemSelect.quantity)}`);
             }
             else {
-                console.log('Insufficient quantitiy!');
+                console.log('\nInsufficient quantitiy!');
             }
             connection.end();
         })
@@ -81,6 +81,6 @@ function purchase() {
 
 connection.connect(function(err) {
     if (err) throw err;
-    console.log(`Connection established with user ID: ${connection.threadId}`);
+    console.log(`Connection established with user ID: ${connection.threadId}\n`);
     landingScreen();
 });
